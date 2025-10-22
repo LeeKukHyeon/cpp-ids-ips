@@ -1,15 +1,5 @@
 #pragma once
-#include <string>
-
-struct PacketInfo {
-
-	std::string srcIp;
-	std::string dstIp;
-	int protocol = 0;
-	int srcPort = 0;
-	int dstPort = 0;
-	size_t rawLen = 0;
-};
+#include "Packet.h"
 
 class PacketParser {
 
@@ -17,5 +7,6 @@ public:
 	PacketParser() = default;
 	~PacketParser() = default;
 
-	PacketInfo parse(const unsigned char* data, size_t length);
+	// raw ethernet frame -> Packet (fills tcp seq/flags when available)
+	Packet parse(const unsigned char* data, size_t len);
 };
