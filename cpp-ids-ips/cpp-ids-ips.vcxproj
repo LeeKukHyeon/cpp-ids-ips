@@ -129,12 +129,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cpp-ids-ips.cpp" />
+    <ClCompile Include="Detector.cpp" />
+    <ClCompile Include="PacketParser.cpp" />
+    <ClCompile Include="PacketSniffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Detector.h" />
+    <ClInclude Include="PacketParser.h" />
     <ClInclude Include="PacketSniffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
