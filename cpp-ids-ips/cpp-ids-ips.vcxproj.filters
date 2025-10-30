@@ -13,30 +13,63 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="PacketParser.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Detector.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PacketSniffer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="PacketSniffer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PacketParser.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Detector.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+    <Filter Include="소스 파일\src">
+      <UniqueIdentifier>{4692a171-82c5-41e5-bf27-78a27a1fc95d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\utils">
+      <UniqueIdentifier>{991b7dde-f106-4f08-bad9-43da588d6176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\alert">
+      <UniqueIdentifier>{f0e8d948-df5d-4f36-9059-0c86c3139b46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\rules">
+      <UniqueIdentifier>{dc0be632-c450-4ac2-8125-fd6a262b39d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\parser">
+      <UniqueIdentifier>{8174a073-4220-487f-b413-63f56a7111a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\src\capture">
+      <UniqueIdentifier>{8c0ba680-90c4-494c-92b1-847482ffd53b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>소스 파일\src\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="AlertManager.cpp">
+      <Filter>소스 파일\src\alert</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>소스 파일\src\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="RuleEngine.cpp">
+      <Filter>소스 파일\src\rules</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture.cpp">
+      <Filter>소스 파일\src\capture</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Logger.h">
+      <Filter>소스 파일\src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="AlertManager.h">
+      <Filter>소스 파일\src\alert</Filter>
+    </ClInclude>
+    <ClInclude Include="RuleEngine.h">
+      <Filter>소스 파일\src\rules</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>소스 파일\src\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture.h">
+      <Filter>소스 파일\src\capture</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
