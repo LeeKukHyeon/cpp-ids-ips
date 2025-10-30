@@ -1,10 +1,11 @@
 #pragma once
-#include "Parser.h"
-#include "AlertManager.h"
+#include <string>
 
-class RuleEngine {
-	AlertManager& alertMgr;
-public:
-	RuleEngine(AlertManager& am);
-	void inspect(const PacketInfo& pkt);
+
+struct Rule {
+	std::string proto; // tcp|udp|any
+	std::string direction; // dst|src|any
+	std::string field; // port currently
+	int value = 0;
+	std::string message;
 };
