@@ -141,25 +141,19 @@
     <Text Include="rules.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\alert\AlertManager.cpp" />
-    <ClCompile Include="src\Capture.cpp" />
-    <ClCompile Include="src\utils\Logger.cpp" />
+    <ClCompile Include="src\flow\FlowDetector.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Parser.cpp" />
-    <ClCompile Include="src\RuleEngine.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\alert\AlertManager.h" />
-    <ClInclude Include="src\Capture.h" />
-    <ClInclude Include="src\utils\Logger.h" />
-    <ClInclude Include="src\Parser.h" />
-    <ClInclude Include="src\RuleEngine.h" />
+    <ClCompile Include="src\rules\RuleLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fREADME.md">
       <SubType>
       </SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\flow\FlowDetector.h" />
+    <ClInclude Include="src\rules\RuleLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

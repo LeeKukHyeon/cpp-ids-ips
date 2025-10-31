@@ -1,113 +1,40 @@
-#include "RuleLoader.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <thread>
+#pragma once
+#include <string>
 #include <vector>
-#include <sys/inotify.h>
-#include <unistd.h>
-#include <chrono>
+#include <memory>
+#include <map>
+#include <pcre2.h>
 
-static std::string trim(const std::string& s) {
-    size_t a = s.find_first_not_of(" \t\r\n");
-    if (a == std::string::npos) return "";
-    size_t b = s.find_last_not_of(" \t\r\n");
-    return s.substr(a, b - a + 1);
-}
+struct Rule {
+    int sid = 0;
+    int rev = 0;
+    std::string msg;
+    std::string classtype;
+    int severity = 5;
+    double confidence = 1.0;
+    std::string action = "alert"; // alert, drop, monitor, block_temp
+    std::string fast_content; // lowercased
+    std::string pcre_pattern;
+    pcre2_code* pcre_code = nullptr;
+    bool enabled = true;
+    std::map<std::string, std::string> metadata;
 
-RuleLoader::RuleLoader(const std::string& path) : path_(path) {}
+    ~Rule();
+    bool match(const unsigned char* payload, size_t len) const;
+};
 
-RuleLoader::~RuleLoader() {
-    stopWatching();
-}
+class RuleLoader {
+public:
+    RuleLoader() = default;
+    ~RuleLoader() = default;
 
-RuleLoader::Rules RuleLoader::loadRules() {
-    Rules rules;
-    std::ifstream ifs(path_);
-    if (!ifs) return rules;
-    std::string line;
-    while (std::getline(ifs, line)) {
-        line = trim(line);
-        if (line.empty() || line[0] == '#') continue;
-        std::vector<std::string> parts;
-        std::istringstream ss(line);
-        std::string tok;
-        while (std::getline(ss, tok, ',')) parts.push_back(trim(tok));
-        if (parts.size() < 5) continue;
-        Rule r;
-        r.proto = parts[0];
-        r.direction = parts[1];
-        r.field = parts[2];
-        try { r.value = std::stoi(parts[3]); }
-        catch (...) { continue; }
-        r.message = parts[4];
-        rules.push_back(r);
-    }
-    return rules;
-}
+    bool loadRules(const std::string& filename, std::string& err);
+    const std::vector<std::shared_ptr<Rule>>& getRules() const { return rules; }
 
-void RuleLoader::startWatching(ChangeCallback cb) {
-    if (running.load()) return;
-    running.store(true);
+    static std::string toLower(const std::string& s);
 
-    watcherThread = std::thread([this, cb]() {
-        inotifyFd = inotify_init1(IN_NONBLOCK);
-        if (inotifyFd < 0) {
-            std::cerr << "inotify_init1 failed\n";
-            running.store(false);
-            return;
-        }
-        watchFd = inotify_add_watch(inotifyFd, path_.c_str(), IN_MODIFY | IN_CLOSE_WRITE);
-        if (watchFd < 0) {
-            std::cerr << "inotify_add_watch failed for " << path_ << "\n";
-            close(inotifyFd);
-            running.store(false);
-            return;
-        }
-
-        // initial load
-        cb(loadRules());
-
-        const size_t bufLen = 1024 * (sizeof(struct inotify_event) + 16);
-        std::vector<char> buf(bufLen);
-
-        while (running.load()) {
-            ssize_t len = read(inotifyFd, buf.data(), bufLen);
-            if (len > 0) {
-                size_t i = 0;
-                while (i < (size_t)len) {
-                    struct inotify_event* event = reinterpret_cast<struct inotify_event*>(&buf[i]);
-                    if (event->mask & (IN_MODIFY | IN_CLOSE_WRITE)) {
-                        cb(loadRules());
-                    }
-                    i += sizeof(struct inotify_event) + event->len;
-                }
-            }
-            // sleep with small granularity so stopWatching() can react
-            std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        }
-
-        // cleanup
-        if (watchFd >= 0) inotify_rm_watch(inotifyFd, watchFd);
-        if (inotifyFd >= 0) close(inotifyFd);
-        watchFd = -1;
-        inotifyFd = -1;
-        });
-}
-
-void RuleLoader::stopWatching() {
-    if (!running.load()) {
-        // still ensure thread cleaned up if created
-        if (watcherThread.joinable()) {
-            watcherThread.join();
-        }
-        return;
-    }
-
-    running.store(false);
-
-    // wait for thread to exit and join it
-    if (watcherThread.joinable()) {
-        watcherThread.join();
-    }
-}
+private:
+    std::vector<std::shared_ptr<Rule>> rules;
+    void parseRuleLine(const std::string& line);
+    pcre2_code* compilePcre(const std::string& pattern, std::string& err);
+};
